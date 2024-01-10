@@ -1,11 +1,11 @@
-function sum(...values) {
+function sum(...values: number[]) {
   const totalSum = values.reduce(
     (valueACtual, nextValue) => valueACtual + nextValue
   );
   return totalSum;
 }
 
-const inputParse = (values) => {
+const inputParse = (values: string[]) => {
   const number = values.map((item) => parseInt(item));
 
   return sum(...number);

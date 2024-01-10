@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node my-first-io.js"
+    "dev": "ts-node my-first-io.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "learnyounode": "^4.2.2",
     "nodemon": "^3.0.2"
   },
   "devDependencies": {

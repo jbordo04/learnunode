@@ -1,6 +1,5 @@
 "use strict";
 const f4 = require("fs");
-const path = require("path");
 const file4 = process.argv[2];
 const exteFile = "." + process.argv[3];
 f4.readdir(file4, (err, files) => {

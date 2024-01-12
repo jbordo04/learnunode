@@ -1,4 +1,5 @@
-import http9 from "http";
+const http9 = require("http");
+
 const map = require("through2-map");
 
 const port9 = process.argv[2];

@@ -1,5 +1,5 @@
-import http8 from "http";
-import fs8 from "fs";
+const http8 = require("http");
+const fs8 = require("fs");
 
 const port8 = process.argv[2];
 const pathFile8 = process.argv[3];

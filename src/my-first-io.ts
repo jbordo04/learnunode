@@ -1,5 +1,5 @@
-const fs = require("fs");
-// const path = require("path");
+import fs from "fs";
+// const path from "path";
 const pathFile = process.argv[2];
 // const pathFile = path.join(__dirname, "note.txt");
 

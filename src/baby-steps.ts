@@ -1,4 +1,5 @@
-function sum(...values: number[]) {
+export function sum(...values: number[]) {
+  if (values.length == 0) return 0;
   const totalSum = values.reduce(
     (valueACtual, nextValue) => valueACtual + nextValue
   );

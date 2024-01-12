@@ -1,5 +1,3 @@
-import { typeParameter } from "@babel/types";
-
 const http = require("http");
 
 const url = process.argv[2];

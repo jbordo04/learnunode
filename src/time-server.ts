@@ -1,4 +1,4 @@
-const net = require("net");
+import net from "net";
 
 //Se necesitan dobles barras para alternar
 const port = Number(process.argv[2]) || 8000;

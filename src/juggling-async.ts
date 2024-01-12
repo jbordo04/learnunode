@@ -33,10 +33,10 @@
 //   });
 // });
 
-const http2 = require("http");
+import http2 = require("http");
 const dataArray: any[] = [];
 
-function httpArray(url: string, index: number): Promise<string> {
+function httpArray(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     http2
       .get(url, async (res: any) => {
@@ -57,7 +57,7 @@ function httpArray(url: string, index: number): Promise<string> {
 }
 async function httpAsync() {
   for (let i = 0; i < 3; i++) {
-    const data = await httpArray(process.argv[2 + i], i);
+    const data = await httpArray(process.argv[2 + i]);
     dataArray.push(data);
   }
 }

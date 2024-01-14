@@ -1,7 +1,9 @@
 import fs from "fs";
+// import http from "http";
+import https from "https";
 import path from "path";
 import { sum } from "../src/baby-steps";
-import { showDirCB } from "../src/mymodule";
+import { showJestCB } from "../src/mymodule2";
 
 describe("Testing todos los niveles de LearnYouNode", () => {
   test("Nivel 1: Imprimir el string", () => {
@@ -27,9 +29,6 @@ describe("Testing todos los niveles de LearnYouNode", () => {
   });
 
   test("Nivel 3: Imprimir num saltos de linea Sync", () => {
-    // const text = `Hola que tal estas?
-    // Espero que bien, porque
-    // lo necesitas!!`;
     const path = "./note.txt";
     const data = fs.readFileSync(path);
     const num = data.toString().split("\n").length - 1;
@@ -44,6 +43,7 @@ describe("Testing todos los niveles de LearnYouNode", () => {
   });
 
   test("Nivel 5: Imprimir los dir del padre según la extensión", async () => {
+    expect.assertions(1);
     const pathDir = path.resolve(__dirname, "..");
     // const pathDir = path
     //   .join(__dirname)
@@ -55,15 +55,114 @@ describe("Testing todos los niveles de LearnYouNode", () => {
     const filtered = response.filter((file) => file.includes(exteFile));
     expect(filtered.length).toEqual(5);
   });
+
   test("Nivel 6: Import una función mediante CallBack", async () => {
+    expect.assertions(1);
     const pathDir = path.resolve(__dirname, "..");
-    const exteFile = ".json";
-    showDirCB(pathDir, exteFile, (err: string, data: string[]) => {
-      // let dataReturn;
-      // if (err) return false;
-      // return data.length;
-      expect(data.length).toEqual(5);
-    });
+    const exteFile = "lint";
+
+    const response = await showJestCB(pathDir, exteFile);
+
+    expect(response.length).toBe(1);
   });
-  test("Nivel 6: Import una función mediante CallBack", async () => {});
+
+  test("Nivel 7: Imprimir un dato enviado al cliente", async () => {
+    const url = "https://jsonplaceholder.typicode.com/users";
+    async function request(url: string) {
+      return new Promise<Buffer>((resolve) => {
+        // let data: string = "";
+        https.get(url, (res) => {
+          res.on("data", (chunk) => {
+            // data += chunk;
+            resolve(chunk);
+          });
+        });
+      });
+    }
+    const data = await request(url);
+    // expect.assertions(1);
+    expect(typeof data).toBe("object");
+    expect(data).toBeInstanceOf(Buffer);
+  });
+
+  test("Nivel 8: Imprimir los datos enviado al cliente", async () => {
+    const url = "https://jsonplaceholder.typicode.com/users";
+    async function request(url: string) {
+      return new Promise<string>((resolve) => {
+        let dataProm: string = "";
+        https.get(url, (res) => {
+          res.on("data", (chunk) => (dataProm += chunk));
+          res.on("end", () => resolve(dataProm));
+        });
+      });
+    }
+    const data = await request(url);
+    expect.assertions(1);
+    expect(typeof data).toBe("string");
+  });
+
+  test("Nivel 9: Imprimir los datos acumulados simultaneamente mediante iteracion de urls", async () => {
+    const url = [
+      "https://jsonplaceholder.typicode.com/users",
+      "https://jsonplaceholder.typicode.com/users",
+      "https://jsonplaceholder.typicode.com/users",
+    ];
+    const data: string[] = [];
+    async function request(url: string) {
+      return new Promise<string>((resolve) => {
+        let data: string = "";
+        https.get(url, (res) => {
+          res.on("data", (chunk) => (data += chunk));
+          res.on("end", () => resolve(data));
+        });
+      });
+    }
+    for (let i = 0; i < url.length; i++) {
+      data[i] = await request(url[i]);
+    }
+    // expect.assertions(1);
+
+    expect(data.length).toBe(3);
+    expect(typeof data).toBe("object");
+  });
+
+  test("Nivel 10: time server", async () => {
+    const spyHTTP = jest.spyOn(http, "createServer");
+    https.createServer((req, res) => {}).listen(443);
+    expect(spyHTTP).toHaveBeenCalled(1);
+  });
+  // test("Nivel 11: file Server", async () => {});
 });
+
+// const url = "https://jsonplaceholder.typicode.com/users";
+
+// // (async () => {
+// async function request(url: string) {
+//   return new Promise<string>((resolve) => {
+//     // let data: string = "";
+//     https.get(url, (res) => {
+//       // resolve(chunk);
+//       res.on("data", (chunk) => resolve(chunk));
+//       // res.on("data", (chunk) => (data += chunk));
+//       // res.on("end", () => resolve(data));
+//     });
+//   });
+// }
+// const data = await request(url);
+// console.log("asdf", data, typeof data);
+// })();
+
+// const callFunc = async () => {
+//   const data = await request(url);
+//   console.log("asdf", data, typeof data);
+// };
+// callFunc();
+
+// (async () => {
+//   const data = await request(url);
+//   console.log("asdf", data, typeof data);
+// })();
+
+// request(url).then((data) => {
+//   console.log("asdf", data, typeof data);
+// });

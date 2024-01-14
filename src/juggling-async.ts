@@ -1,6 +1,4 @@
-// const url1 = process.argv[2];
-// const url2 = process.argv[3];
-// const url3 = process.argv[4];
+// const url1 = process.argv[2];// const url2 = process.argv[3];// const url3 = process.argv[4];
 
 // http2.get(url1, async (res: any) => {
 //   let dataServer1 = "";

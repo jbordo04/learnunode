@@ -1,7 +1,7 @@
 import net from "net";
 
 //Se necesitan dobles barras para alternar
-const port = Number(process.argv[2]) || 8000;
+export const port = Number(process.argv[2]) || 8000;
 
 const date = new Date();
 
@@ -16,11 +16,13 @@ const month =
 const formatDate =
   date.getFullYear() + "-" + month + "-" + day + " " + hour + ":" + minute;
 
-const server = net.createServer((socket: any) => {
-  socket.write(formatDate);
-  socket.end("\n");
-});
+export const server = net
+  .createServer((socket) => {
+    socket.write(formatDate);
+    socket.end("\n");
+  })
+  .listen(port);
 
-server.listen(port, () =>
-  console.log(`Servidor corriendo en el puerto ${port}`)
-);
+// server.listen(port, () =>
+//   console.log(`Servidor corriendo en el puerto ${port}`)
+// );

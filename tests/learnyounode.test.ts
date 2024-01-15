@@ -1,9 +1,11 @@
 import fs from "fs";
 // import http from "http";
 import https from "https";
+import net from "net";
 import path from "path";
 import { sum } from "../src/baby-steps";
 import { showJestCB } from "../src/mymodule2";
+// import { server } from "../src/time-server";
 
 describe("Testing todos los niveles de LearnYouNode", () => {
   test("Nivel 1: Imprimir el string", () => {
@@ -102,6 +104,7 @@ describe("Testing todos los niveles de LearnYouNode", () => {
   });
 
   test("Nivel 9: Imprimir los datos acumulados simultaneamente mediante iteracion de urls", async () => {
+    expect.assertions(2);
     const url = [
       "https://jsonplaceholder.typicode.com/users",
       "https://jsonplaceholder.typicode.com/users",
@@ -126,13 +129,88 @@ describe("Testing todos los niveles de LearnYouNode", () => {
     expect(typeof data).toBe("object");
   });
 
-  test("Nivel 10: time server", async () => {
-    const spyHTTP = jest.spyOn(http, "createServer");
-    https.createServer((req, res) => {}).listen(443);
-    expect(spyHTTP).toHaveBeenCalled(1);
+  // const randomNumberExpected = 0.123456789;
+
+  // beforeEach(() => {
+  //   // modificamos el comportamiento del método random para que retorne randomNumberExpected
+  //   jest.spyOn(global.Math, "random").mockReturnValue(randomNumberExpected);
+  // });
+
+  // afterEach(() => {
+  //   // eliminamos el comportamiento asignado anteriormente
+  //   jest.spyOn(global.Math, "random").mockRestore();
+  // });
+  // const dataSend = "";
+  let spyServer: jest.SpyInstance;
+  let dataWriting: string;
+  let server: net.Server;
+  let formatDate: string;
+
+  function setupServer() {
+    formatDate = "2024-01-15 18:38";
+
+    spyServer = jest.spyOn(net, "createServer").mockImplementation(() => {
+      server = net.createServer((socket) => {
+        socket.write(formatDate);
+        dataWriting = formatDate;
+        socket.end("\n");
+      });
+      return server;
+    });
+    return new Promise<void>((resolve) => {
+      server.listen(5000, resolve);
+    });
+  }
+
+  beforeEach(async () => {
+    await setupServer();
   });
-  // test("Nivel 11: file Server", async () => {});
+
+  afterEach(async () => {
+    await new Promise<void>((resolve) => {
+      server.close(() => {
+        spyServer.mockRestore();
+        resolve();
+      });
+    });
+  });
+
+  test("Nivel 10: time server", async () => {
+    expect.assertions(1);
+    // const spyServer = jest.spyOn(net, "createServer");
+    // await new Promise((resolve) => setImmediate(resolve));
+    await Promise.resolve();
+
+    expect(spyServer).toHaveBeenCalledTimes(1);
+  });
+
+  test("Nivel 10.5: time server", async () => {
+    expect.assertions(1);
+    await Promise.resolve();
+
+    expect(dataWriting).toBe(formatDate);
+  });
 });
+// const onData = jest.fn((data) => {
+//   const receiveData = data.toString();
+//   const expectedData = formatDate;
+//   expect(receiveData).toBe(expectedData);
+// });
+// const client = net.createConnection({ port: 5000 });
+// client.on("data", onData);
+
+// const spyClient = jest.spyOn(net, "createConnection");
+// setTimeout(() => {
+//   server.close();
+//   expect(spyServer).toHaveBeenCalledTimes(1);
+//   expect(dataWriting).toBe(formatDate);
+//   done();
+// }, 2000);
+
+// client.end();
+// expect(spyClient).toHaveBeenCalledTimes(1);
+
+// test("Nivel 11: file Server", async () => {});
 
 // const url = "https://jsonplaceholder.typicode.com/users";
 
@@ -166,3 +244,5 @@ describe("Testing todos los niveles de LearnYouNode", () => {
 // request(url).then((data) => {
 //   console.log("asdf", data, typeof data);
 // });
+
+//https://developero.io/blog/jest-mock-module-function-class-promises-axios-y-mas

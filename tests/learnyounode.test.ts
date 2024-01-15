@@ -1,6 +1,7 @@
 import fs from "fs";
 // import http from "http";
 import https from "https";
+import net from "net";
 import path from "path";
 import { sum } from "../src/baby-steps";
 import { showJestCB } from "../src/mymodule2";
@@ -126,10 +127,45 @@ describe("Testing todos los niveles de LearnYouNode", () => {
     expect(typeof data).toBe("object");
   });
 
+  // const randomNumberExpected = 0.123456789;
+
+  // beforeEach(() => {
+  //   // modificamos el comportamiento del método random para que retorne randomNumberExpected
+  //   jest.spyOn(global.Math, "random").mockReturnValue(randomNumberExpected);
+  // });
+
+  // afterEach(() => {
+  //   // eliminamos el comportamiento asignado anteriormente
+  //   jest.spyOn(global.Math, "random").mockRestore();
+  // });
+  // const dataSend = "";
   test("Nivel 10: time server", async () => {
-    const spyHTTP = jest.spyOn(http, "createServer");
-    https.createServer((req, res) => {}).listen(443);
-    expect(spyHTTP).toHaveBeenCalled(1);
+    expect.assertions(1);
+
+    const date = new Date();
+
+    //format = "YYYY-MM-DD hh:mm";
+    const minute =
+      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    const hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    const month =
+      date.getMonth() < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+
+    const formatDate =
+      date.getFullYear() + "-" + month + "-" + day + " " + hour + ":" + minute;
+
+    const spyNET = jest.spyOn(net, "createServer", "write");
+    spyNET.mockImplementation(() => {
+      net
+        .createServer((socket) => {
+          socket.write(formatDate);
+        })
+        .listen(443);
+    });
+    expect(net.createServer()).toHaveBeenCalled();
+    expect(spyNET).toHaveBeenCalledTimes(1);
+    expect(spyNET).toEqual(formatDate);
   });
   // test("Nivel 11: file Server", async () => {});
 });
@@ -166,3 +202,5 @@ describe("Testing todos los niveles de LearnYouNode", () => {
 // request(url).then((data) => {
 //   console.log("asdf", data, typeof data);
 // });
+
+//https://developero.io/blog/jest-mock-module-function-class-promises-axios-y-mas

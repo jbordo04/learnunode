@@ -1,39 +1,27 @@
 function movingShift(texto: string, numero: number) {
   let codigo = "";
-  const abc = "abcdefghijklmnopqrstuvyxwz"; //n no existe
-  const ABC = "ABCEDEFGHIJKLMNOPQRSTUVYWXZ";
-  const abcSplited = abc.split("");
-  const ABCSplited = ABC.split("");
+  const abcArray = "abcdefghijklmnopqrstuvwxyz".split(""); //n no existe
+  const ABCArray = "ABCEDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const textoSplited = texto.split("");
 
   let numCodigo = numero;
   // console.log(abc.length, texto.split("")[12 + 17]);
   for (let i = 0; i < textoSplited.length; i++) {
-    // console.log(numCodigo);
-    if (abc.includes(textoSplited[i])) {
-      const letraIndex = abcSplited.findIndex(
-        (letraS) => letraS === textoSplited[i]
-      );
+    if (i == 0) {
+      codigo += ABCArray[ABCArray.indexOf(textoSplited[i]) + 1];
+      ++numCodigo;
+      continue;
+    }
+    if (abcArray.includes(textoSplited[i])) {
+      const letraIndex = abcArray.indexOf(textoSplited[i]);
 
       const valueUnder26 = letraIndex + numCodigo;
       const valueUpper26 = letraIndex + numCodigo - 26;
       const valuePosition =
         letraIndex + numCodigo > 25 ? valueUpper26 : valueUnder26;
-      codigo += abcSplited[valuePosition];
+      codigo += abcArray[valuePosition];
       if (numCodigo == 26) numCodigo = 1;
       else ++numCodigo;
-      // }
-    } else if (ABC.includes(textoSplited[i])) {
-      const letraIndex = ABCSplited.findIndex(
-        (letraS) => letraS === textoSplited[i]
-      );
-
-      const valueUnder26 = letraIndex + numCodigo;
-      const valueUpper26 = letraIndex + numCodigo - 26;
-      const valuePosition =
-        letraIndex + numCodigo > 25 ? valueUpper26 : valueUnder26;
-      codigo += ABCSplited[valuePosition];
-      ++numCodigo;
       // }
     } else {
       codigo += textoSplited[i];
@@ -43,54 +31,28 @@ function movingShift(texto: string, numero: number) {
   return codigo;
 }
 
-function movingShift1(texto: string, numero: number) {
-  let codigo = "";
-
-  const abc = "abcdefghijklmnopqrstuvwxyz"; // Ahora incluye 'z'
-
-  const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // Ahora incluye 'D'
-  const abcSplited = abc.split("");
-  const ABCSplited = ABC.split("");
-  const textoSplited = texto.split("");
-  let numCodigo = numero;
-  console.log(abc.length, texto.split("")[12 + 17]);
-  for (let i = 0; i < textoSplited.length; i++) {
-    console.log(numCodigo);
-    if (abc.includes(textoSplited[i])) {
-      const letraIndex = abcSplited.findIndex(
-        (letraS) => letraS === textoSplited[i]
-      );
-      const valueUnder26 = letraIndex + numCodigo;
-      const valueUpper26 = letraIndex + numCodigo - 26;
-      const valuePosition =
-        letraIndex + numCodigo > 25 ? valueUpper26 : valueUnder26;
-      codigo += abcSplited[valuePosition];
-      if (numCodigo == 26) numCodigo = 1;
-      else ++numCodigo;
-    } else if (ABC.includes(textoSplited[i])) {
-      const letraIndex = ABCSplited.findIndex(
-        (letraS) => letraS === textoSplited[i]
-      );
-      const valueUnder26 = letraIndex + numCodigo;
-      const valueUpper26 = letraIndex + numCodigo - 26;
-      const valuePosition =
-        letraIndex + numCodigo > 25 ? valueUpper26 : valueUnder26;
-      codigo += ABCSplited[valuePosition];
-      ++numCodigo;
-    } else {
-      codigo += textoSplited[i];
-      ++numCodigo;
-    }
-  }
-}
-const u = "I should have known that you would have a perfect answer for me!!";
-
+const u = "I should have known that you would have a perfect answer for me!!!";
 const codCedsar = movingShift(u, 1);
-console.log("sdf", codCedsar);
+const codeArray: string[] = [];
+let numO = 0;
+let numF = 14;
+for (let i = 0; i < codCedsar.length; i++) {
+  codeArray.push(codCedsar.slice(numO, numF));
+  numO += 14;
+  numF += 14;
+  i += 14;
+}
+console.log("sdf", codeArray);
+
 const v = [
   "J vltasl rlhr ",
   "zdfog odxr ypw",
   " atasl rlhr p ",
-  "gwkzzyq",
+  "gwkzzyq zntyhv",
   " lvz wp!!!",
 ];
+
+//Utilizamos JSON.stringify para comprobar el contenido de la Array y que no de false
+JSON.stringify(v) === JSON.stringify(codeArray)
+  ? console.log("Correcto")
+  : console.log("Incorrecto");

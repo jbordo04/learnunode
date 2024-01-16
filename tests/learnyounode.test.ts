@@ -5,6 +5,7 @@ import net from "net";
 import path from "path";
 import { sum } from "../src/baby-steps";
 import { showJestCB } from "../src/mymodule2";
+import { formatDate } from "../src/time-server";
 // import { server } from "../src/time-server";
 
 describe("Testing todos los niveles de LearnYouNode", () => {
@@ -129,65 +130,76 @@ describe("Testing todos los niveles de LearnYouNode", () => {
     expect(typeof data).toBe("object");
   });
 
-  // const randomNumberExpected = 0.123456789;
+  // let spyServer: jest.SpyInstance;
+  // let dataWriting: string;
+  // let server: net.Server;
+  // let formatDate: string;
 
-  // beforeEach(() => {
-  //   // modificamos el comportamiento del método random para que retorne randomNumberExpected
-  //   jest.spyOn(global.Math, "random").mockReturnValue(randomNumberExpected);
+  // function setupServer() {
+  //   formatDate = "2024-01-15 18:38";
+
+  //   spyServer = jest.spyOn(net, "createServer").mockImplementation(() => {
+  //     server = net.createServer((socket) => {
+  //       socket.write(formatDate);
+  //       dataWriting = formatDate;
+  //       socket.end("\n");
+  //     });
+  //     return server;
+  //   });
+  //   return new Promise<void>((resolve) => {
+  //     server.listen(5000, resolve);
+  //   });
+  // }
+
+  // beforeEach(async () => {
+  //   await setupServer();
   // });
 
-  // afterEach(() => {
-  //   // eliminamos el comportamiento asignado anteriormente
-  //   jest.spyOn(global.Math, "random").mockRestore();
+  // afterEach(async () => {
+  //   await new Promise<void>((resolve) => {
+  //     server.close(() => {
+  //       spyServer.mockRestore();
+  //       resolve();
+  //     });
+  //   });
   // });
-  // const dataSend = "";
-  let spyServer: jest.SpyInstance;
-  let dataWriting: string;
-  let server: net.Server;
-  let formatDate: string;
-
-  function setupServer() {
-    formatDate = "2024-01-15 18:38";
-
-    spyServer = jest.spyOn(net, "createServer").mockImplementation(() => {
-      server = net.createServer((socket) => {
-        socket.write(formatDate);
-        dataWriting = formatDate;
-        socket.end("\n");
-      });
-      return server;
-    });
-    return new Promise<void>((resolve) => {
-      server.listen(5000, resolve);
-    });
-  }
-
-  beforeEach(async () => {
-    await setupServer();
-  });
-
-  afterEach(async () => {
-    await new Promise<void>((resolve) => {
-      server.close(() => {
-        spyServer.mockRestore();
-        resolve();
-      });
-    });
-  });
 
   test("Nivel 10: time server", async () => {
-    expect.assertions(1);
-    // const spyServer = jest.spyOn(net, "createServer");
-    // await new Promise((resolve) => setImmediate(resolve));
-    await Promise.resolve();
+    expect.assertions(3);
+    const formatDate = "2024-01-15 18:38";
 
+    let dataWriting: string = "";
+
+    const serverPromise = new Promise<void>((resolve) => {
+      const server = net.createServer((socket) => {
+        socket.write(formatDate);
+        socket.end("\n");
+        resolve();
+      });
+      server.listen(3000);
+    });
+
+    await serverPromise;
+
+    // net.createServer.mockRestore();
+    const spyServer = jest.spyOn(net, "createServer");
     expect(spyServer).toHaveBeenCalledTimes(1);
-  });
 
-  test("Nivel 10.5: time server", async () => {
-    expect.assertions(1);
-    await Promise.resolve();
+    const spyWrite = jest
+      .spyOn(net.Socket.prototype, "write")
+      .mockImplementation(
+        (
+          str: string | Uint8Array,
+          encoding?: BufferEncoding,
+          cb?: (err?: Error) => void
+        ): boolean => {
+          dataWriting = str.toString(); // O cualquier lógica que necesites aquí
+          if (cb) cb(); // Llamar al callback si se proporciona
+          return true; // Puedes ajustar el valor de retorno según tus necesidades
+        }
+      );
 
+    expect(spyWrite).toHaveBeenCalled();
     expect(dataWriting).toBe(formatDate);
   });
 });

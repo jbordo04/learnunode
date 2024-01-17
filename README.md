@@ -2,9 +2,9 @@
 
 Todos los comandos posibles:
 
-`npm run dev` Inicia el el learnyuonode
+`npm run build` Inicia el tsc
 
-`npm test` Inicia el etesting
+`npm test` Inicia el testing
 
 `npm run eslint` Inicia el eslint
 
@@ -22,4 +22,4 @@ En la terminal, escribiri unos de estos comandos:
 
 `learnyounode print` Muestra el anuncio del ejercicio seleccionado.
 
-`learnyounode verify file_Name.js` Haace testing sobre las funciones SOLO en javascript.
+`learnyounode verify file_Name.js` Haace testing sobre las funciones SOLO en javascript. !Importante! El filename = `dist/src/file_Name.js`

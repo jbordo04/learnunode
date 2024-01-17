@@ -1,5 +1,5 @@
-const url13 = require("url");
-const http13 = require("http");
+import url13 from "url";
+import http13 from "http";
 
 const port13 = process.argv[2];
 type Time =
@@ -15,7 +15,7 @@ http13
     const urlObject = url13.parse(req.url, true);
 
     //Obtenemos la query en forma de objeto y accedemos a su propiedad como tal
-    const time = urlObject.query.iso;
+    const time: any = urlObject.query.iso;
 
     if (urlObject.pathname === "/api/parsetime") {
       const hor =

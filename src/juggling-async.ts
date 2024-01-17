@@ -1,38 +1,5 @@
-// const url1 = process.argv[2];// const url2 = process.argv[3];// const url3 = process.argv[4];
-
-// http2.get(url1, async (res: any) => {
-//   let dataServer1 = "";
-//   res.on("data", (chunk: string) => {
-//     dataServer1 += chunk.toString();
-//   });
-//   res.on("end", () => {
-//     console.log(dataServer1);
-//   });
-// });
-
-// http2.get(url2, async (res: any) => {
-//   let dataServer2 = "";
-
-//   res.on("data", (chunk: string) => {
-//     dataServer2 += chunk.toString();
-//   });
-//   res.on("end", () => {
-//     console.log(dataServer2);
-//   });
-// });
-
-// http2.get(url3, async (res: any) => {
-//   let dataServer3 = "";
-//   res.on("data", (chunk: string) => {
-//     dataServer3 += chunk.toString();
-//   });
-//   res.on("end", () => {
-//     console.log(dataServer3);
-//   });
-// });
-
 import http2 = require("http");
-const dataArray: any[] = [];
+const dataArray: string[] = [];
 
 function httpArray(url: string): Promise<string> {
   return new Promise((resolve, reject) => {

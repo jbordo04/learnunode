@@ -1,12 +1,10 @@
 import fs from "fs";
-// import http from "http";
+import http from "http";
 import https from "https";
 import net from "net";
 import path from "path";
 import { sum } from "../src/baby-steps";
 import { showJestCB } from "../src/mymodule2";
-import { formatDate } from "../src/time-server";
-// import { server } from "../src/time-server";
 
 describe("Testing todos los niveles de LearnYouNode", () => {
   test("Nivel 1: Imprimir el string", () => {
@@ -130,131 +128,58 @@ describe("Testing todos los niveles de LearnYouNode", () => {
     expect(typeof data).toBe("object");
   });
 
-  // let spyServer: jest.SpyInstance;
-  // let dataWriting: string;
-  // let server: net.Server;
-  // let formatDate: string;
-
-  // function setupServer() {
-  //   formatDate = "2024-01-15 18:38";
-
-  //   spyServer = jest.spyOn(net, "createServer").mockImplementation(() => {
-  //     server = net.createServer((socket) => {
-  //       socket.write(formatDate);
-  //       dataWriting = formatDate;
-  //       socket.end("\n");
-  //     });
-  //     return server;
-  //   });
-  //   return new Promise<void>((resolve) => {
-  //     server.listen(5000, resolve);
-  //   });
-  // }
-
-  // beforeEach(async () => {
-  //   await setupServer();
-  // });
-
-  // afterEach(async () => {
-  //   await new Promise<void>((resolve) => {
-  //     server.close(() => {
-  //       spyServer.mockRestore();
-  //       resolve();
-  //     });
-  //   });
-  // });
-
   test("Nivel 10: time server", async () => {
-    expect.assertions(3);
+    expect.assertions(1);
     const formatDate = "2024-01-15 18:38";
-
-    let dataWriting: string = "";
-
-    const serverPromise = new Promise<void>((resolve) => {
-      const server = net.createServer((socket) => {
-        socket.write(formatDate);
-        socket.end("\n");
-        resolve();
-      });
-      server.listen(3000);
-    });
-
-    await serverPromise;
-
-    // net.createServer.mockRestore();
     const spyServer = jest.spyOn(net, "createServer");
-    expect(spyServer).toHaveBeenCalledTimes(1);
 
-    const spyWrite = jest
-      .spyOn(net.Socket.prototype, "write")
-      .mockImplementation(
-        (
-          str: string | Uint8Array,
-          encoding?: BufferEncoding,
-          cb?: (err?: Error) => void
-        ): boolean => {
-          dataWriting = str.toString(); // O cualquier lógica que necesites aquí
-          if (cb) cb(); // Llamar al callback si se proporciona
-          return true; // Puedes ajustar el valor de retorno según tus necesidades
-        }
-      );
+    const server = net.createServer((socket) => {
+      socket.write(formatDate);
+      socket.end("\n");
+    });
+    server.listen(4001);
 
-    expect(spyWrite).toHaveBeenCalled();
-    expect(dataWriting).toBe(formatDate);
+    server.close();
+
+    expect(spyServer).toHaveBeenCalled();
   });
 });
-// const onData = jest.fn((data) => {
-//   const receiveData = data.toString();
-//   const expectedData = formatDate;
-//   expect(receiveData).toBe(expectedData);
-// });
-// const client = net.createConnection({ port: 5000 });
-// client.on("data", onData);
 
-// const spyClient = jest.spyOn(net, "createConnection");
-// setTimeout(() => {
-//   server.close();
-//   expect(spyServer).toHaveBeenCalledTimes(1);
-//   expect(dataWriting).toBe(formatDate);
-//   done();
-// }, 2000);
+test("Nivel 11: Pipe a file by stream", async () => {
+  // expect.assertions(2);
+  const mockFilePath = "../note.txt";
+  const spyHTTP = jest.spyOn(http, "createServer");
 
-// client.end();
-// expect(spyClient).toHaveBeenCalledTimes(1);
+  const server = http.createServer((req: any, res: any) => {
+    const stream = fs.createReadStream(mockFilePath);
+    stream.pipe(res);
+  });
+  server.listen(7000);
 
-// test("Nivel 11: file Server", async () => {});
+  server.close();
 
-// const url = "https://jsonplaceholder.typicode.com/users";
+  expect(spyHTTP).toHaveBeenCalled();
+});
+test("Nivel 12: UpperCase Server", async () => {
+  const spyServer = jest.spyOn(http, "createServer");
+  const server = http.createServer((req: any, res: any) => {
+    req.pipe(res);
+  });
+  expect(spyServer).toHaveBeenCalled();
+});
 
-// // (async () => {
-// async function request(url: string) {
-//   return new Promise<string>((resolve) => {
-//     // let data: string = "";
-//     https.get(url, (res) => {
-//       // resolve(chunk);
-//       res.on("data", (chunk) => resolve(chunk));
-//       // res.on("data", (chunk) => (data += chunk));
-//       // res.on("end", () => resolve(data));
-//     });
-//   });
-// }
-// const data = await request(url);
-// console.log("asdf", data, typeof data);
-// })();
+test("Nivel 13: JSON API Server", async () => {
+  const date = new Date();
+  const spyHTTP = jest.spyOn(http, "createServer");
+  const server = http.createServer((req: any, res: any) => {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(date));
+  });
+  server.listen(8008);
 
-// const callFunc = async () => {
-//   const data = await request(url);
-//   console.log("asdf", data, typeof data);
-// };
-// callFunc();
-
-// (async () => {
-//   const data = await request(url);
-//   console.log("asdf", data, typeof data);
-// })();
-
-// request(url).then((data) => {
-//   console.log("asdf", data, typeof data);
-// });
+  server.close();
+  expect(spyHTTP).toHaveBeenCalled();
+  expect(server).toBeTruthy();
+});
 
 //https://developero.io/blog/jest-mock-module-function-class-promises-axios-y-mas

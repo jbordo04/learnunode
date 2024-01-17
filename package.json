@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watch --detectOpenHandles",
-    "dev": "ts-node my-first-io.js",
-    "eslint": "eslint \"./**/*.{js,ts}\""
+    "eslint": "eslint \"./**/*.{js,ts}\"",
+    "build": "npx tsc"
   },
   "author": "",
   "license": "ISC",
